@@ -7,12 +7,21 @@ const config = {
     path: path.resolve(__dirname, 'public'),
     filename: 'bundle.js'
   },
+
   devServer: {
     contentBase: path.join(__dirname, 'public'),
     compress: true,
-    port: 1234,
-    disableHostCheck: true
-  }
+    port: 4567,
+    disableHostCheck: true,
+
+    open: true, //open page when server start
+    inline: true, //webpack can log in console
+    //for liveReload:
+    watchContentBase: true,
+    liveReload: true,
+    //////////////
+  },
+  watch: true
 };
 
 module.exports = config;

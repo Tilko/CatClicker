@@ -1,5 +1,5 @@
 {
-  "name": "MiniCalculator",
+  "name": "CatClicker",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -11,23 +11,26 @@
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "css-hot-loader": "^1.4.4",
+    "extract-text-webpack-plugin": "^3.0.2"
+  },
   "scripts": {
     "tdd": "jest src --watch",
     "test": "jest src",
     "test:e2e": "cypress run",
     "test:e2e:open": "cypress open",
-    "start": "webpack-dev-server"
+    "start": "webpack-dev-server -d --hot --config webpack.config.js --watch"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Tilko/MiniCalculator.git"
+    "url": "git+https://github.com/Tilko/CatClicker.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Tilko/MiniCalculator/issues"
+    "url": "https://github.com/Tilko/CatClicker/issues"
   },
-  "homepage": "https://github.com/Tilko/MiniCalculator#readme"
+  "homepage": "https://github.com/Tilko/CatClicker#readme"
 }
