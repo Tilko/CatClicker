@@ -1,0 +1,7 @@
+node_modules
+bundle.js
+
+*.pdf
+*.odt
+*.odt#
+*.mp4
