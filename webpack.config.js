@@ -12,7 +12,7 @@ const config = {
     contentBase: path.join(__dirname, 'public'),
     compress: true,
     port: 4567,
-    disableHostCheck: true,
+    disableHostCheck: true, //to enable bgrok
 
     open: true, //open page when server start
     inline: true, //webpack can log in console
@@ -20,8 +20,7 @@ const config = {
     watchContentBase: true,
     liveReload: true,
     //////////////
-  },
-  watch: true
+  }
 };
 
 module.exports = config;

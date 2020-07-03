@@ -15,13 +15,22 @@ class DocBuild {
 
     static span(innerHTML) {
         const span0 = document.createElement("span")
-        span0.innerHTML = innerHTML;
+        span0.innerText = innerHTML;
         return span0
     }
     static div(elems) {
         const div0 = document.createElement("div")
         elems.forEach(elem => div0.appendChild(elem));
         return div0
+    }
+    static ul(elems) {
+        const ul0 = document.createElement("ul")
+        elems.forEach(elem => {
+            const li0 = document.createElement("li")
+            li0.appendChild(elem)
+            ul0.appendChild(li0)
+        });
+        return ul0
     }
 
     static img(src, alt, callBack_elem) {
