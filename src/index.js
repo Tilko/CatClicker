@@ -1,9 +1,7 @@
 "use strict";
-
 const DocBuild = require("./lib/domBuilding");
-const Counter = require("./lib/generators/Counter");
 
-const main = () => {
+const index = function () {
 
     const cats = [
         { name: "Mitcha", src: "./img/mitcha.jpg" },
@@ -36,18 +34,12 @@ const main = () => {
 
         cat.clickCount = 0;
         catImg.addEventListener("click", () => {
-            console.log(clickCounterSpan)
-            console.log("cat.name:" + cat.name)
             cat.clickCount++;
             clickCounterSpan.innerText = cat.clickCount;
-            console.log(clickCounterSpan)
         })
 
         const catLi = makeCatNavLi(cat.name);
         cat.liElem = catLi;
-
-        const toArray = Object.values(catSectionElems);
-        console.log("toArray:" + toArray)
 
         cat.catSection = DocBuild.div(Object.values(catSectionElems))
 
@@ -57,10 +49,7 @@ const main = () => {
     })
 
     currentCatContainer.appendChild(cats[0].catSection);
-
     catListContainer.appendChild(DocBuild.ul(cats.map(cat => cat.liElem)))
 };
-document.addEventListener("DOMContentLoaded", main);
 
-//h
-//module.exports = ;
+document.addEventListener("DOMContentLoaded", index);
