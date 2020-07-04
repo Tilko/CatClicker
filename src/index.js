@@ -2,34 +2,49 @@ const DocBuild = require("./lib/domBuilding");
 const Counter = require("./lib/generators/Counter");
 
 const main = () => {
+
     const cats = [
         { name: "Mitcha", src: "./img/mitcha.jpg" },
         { name: "BadCat", src: "./img/badCat.jpeg" },
-        { name: "cat3", src: "./img/cat3.jpeg" },
-        { name: "cat4", src: "./img/cat4.jpeg" },
-        { name: "cat5", src: "./img/cat5.jpeg" }
+        { name: "Chauve-Chat", src: "./img/cat3.jpeg" },
+        { name: "CatQuart", src: "./img/cat4.jpeg" },
+        { name: "CatMan", src: "./img/cat5.jpeg" }
     ]
     const catListContainer = document.querySelector("#catListContainer")
     const currentCatContainer = document.querySelector("#currentCatContainer")
 
-    function makeCatSection(title, src, alt) {
-        const cat = DocBuild.img(src, alt)
-        cat.width = 300
-        cat.heigth = "auto"
-        const counter = new Counter();
-        const counterSpan = DocBuild.span(0);
-        counterSpan.style.fontSize = "4em"
-        cat.addEventListener("click", () => {
-            counterSpan.innerText = counter.post()
-        })
-        return DocBuild.div([DocBuild.h2(title), cat, counterSpan])
+    function makeCatSectionElems(title, src, alt) {
+        const catImg = DocBuild.img(src, alt)
+        catImg.width = 300
+        catImg.heigth = "auto"
+        catImg.style.cursor = "pointer"
+        const clickCounterSpan = DocBuild.span(0);
+        clickCounterSpan.style.fontSize = "4em"
+        return { title: DocBuild.h2(title), catImg, clickCounterSpan }
+    }
+    function makeCatNavLi(catName) {
+        liElem = DocBuild.span(catName)
+        liElem.style.cursor = "pointer"
+        return liElem
     }
     cats.forEach(cat => {
-        cat.liElem = DocBuild.span(cat.name)
+        catSectionElems = makeCatSectionElems(cat.name, cat.src, `The ${cat.name} cat.`);
+        ({ title, catImg, clickCounterSpan } = catSectionElems);
 
-        cat.catSection = makeCatSection(cat.name, cat.src, `The ${cat.name} cat.`)
-        cat.liElem.style.cursor = "pointer"
-        cat.liElem.addEventListener("click", () => {
+        cat.clickCount = 0;
+        catImg.addEventListener("click", () => {
+            console.log(clickCounterSpan)
+            cat.clickCount++;
+            clickCounterSpan.innerText = cat.clickCount;
+            console.log(clickCounterSpan)
+        })
+
+        catLi = makeCatNavLi(cat.name);
+        cat.liElem = catLi;
+
+        cat.catSection = DocBuild.div(Object.values(catSectionElems))
+
+        catLi.addEventListener("click", () => {
             currentCatContainer.replaceChild(cat.catSection, currentCatContainer.firstChild)
         })
     })
