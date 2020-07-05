@@ -3,3 +3,11 @@
     flex-direction: row;
 } */
 
+.catImg {
+    width: 300px;
+    height: auto;
+    cursor: "pointer";
+}
+.clickCount {
+    font-size: "4em";
+}

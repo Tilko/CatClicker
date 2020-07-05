@@ -1,6 +1,6 @@
 {
     "defaultCommandTimeout": 500,
     "cypress-watch-and-reload": {
-        "watch": "src/*"
+        "watch": "src/**"
     }
 }

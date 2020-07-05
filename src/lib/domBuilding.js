@@ -1,4 +1,4 @@
-
+"use strict";
 
 class DocBuild {
     static h(number, innerHTML) {
@@ -37,9 +37,28 @@ class DocBuild {
         const elem = document.createElement("img")
         elem.alt = alt;
         elem.src = src;
+        console.log("coucou")
         if (callBack_elem)
             callBack_elem(elem);
         return elem
+    }
+
+    static navlistItemsFragment(objs, objToLiChild, objAndLi_Consumer) {
+        const catlist = document.createDocumentFragment();
+        objs.forEach(obj => {
+            const catLi = DocBuild.navLi(objToLiChild(obj));
+            catlist.appendChild(catLi);
+            objAndLi_Consumer(obj, catLi);
+        })
+        return catlist
+    }
+    static navLi(child) {
+        const liElem = document.createElement("li");
+        if (typeof child === "string")
+            liElem.textContent = child;
+        else liElem.appendChild(child);
+        liElem.style.cursor = "pointer";
+        return liElem;
     }
 }
 module.exports = DocBuild;
