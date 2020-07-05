@@ -20,7 +20,9 @@ class DocBuild {
     }
     static div(elems) {
         const div0 = document.createElement("div")
-        elems.forEach(elem => div0.appendChild(elem));
+        if (elems instanceof DocumentFragment)
+            div0.appendChild(elems)
+        else elems.forEach(elem => div0.appendChild(elem));
         return div0
     }
     static ul(elems) {
@@ -60,5 +62,91 @@ class DocBuild {
         liElem.style.cursor = "pointer";
         return liElem;
     }
+    static makeButton(innerHTML) {
+        const button = document.createElement("button");
+        button.innerHTML = innerHTML;
+        return button;
+    }
 }
-module.exports = DocBuild;
+
+// class DataSourceWithDefault {
+//     constructor(dataDefaultValue) {
+//         this.dataDefaultValue = dataDefaultValue;
+//     }
+//     set data(data) {
+//         this.data = data;
+//     }
+//     get data() {
+//         return this.data || this.dataDefaultValue;
+//     }
+// }
+
+class FormInput {
+    constructor() {
+        this.input = document.createElement("input");
+    }
+    setValue(value) {
+        this.input.value = value;
+    }
+    getValue() {
+        return this.input.value;
+    }
+    getDomNode() {
+        return this.input;
+    }
+}
+class FormFactory {
+    constructor(submittedkeyDataPairsConsumer) {
+        this.submitButtonActionBinder = submitButton => keyDataPairsSupplier =>
+            submitButton.addEventListener("click",
+                () => submittedkeyDataPairsConsumer(keyDataPairsSupplier())
+            )
+
+        this.labelAndKeyPairs = [];
+        this.submitButtonInnerHTML = "Submit";
+        this.cancelButtonInnerHTML = "Cancel";
+        this.submitButtonBuilder = () => DocBuild.makeButton(this.submitButtonInnerHTML);
+        this.cancelButtonBuilder = () => DocBuild.makeButton(this.cancelButtonInnerHTML);
+
+        this.labelDomNodeBuilder = str => DocBuild.span(str);
+        this.formInputSupplier = () => new FormInput();
+    }
+    addFieldConfig(label, key = label) {
+        this.labelAndKeyPairs.push({ label, key });
+    }
+
+    onCancel(formInputsConsumer) {
+        this.cancelButtonActionBinder = cancelButton => formInputsSupplier =>
+            cancelButton.addEventListener("click", () => formInputsConsumer(formInputsSupplier()))
+    }
+    build() {
+        const labelAndInputDomNodes = this.labelAndKeyPairs.map(field => {
+            return {
+                key: field.key,
+                labelDomNode: this.labelDomNodeBuilder(field.label),
+                formInput: this.formInputSupplier()
+            }
+        })
+        const submitButton = this.submitButtonBuilder()
+        this.submitButtonActionBinder(submitButton)(() =>
+            labelAndInputDomNodes.map(elem => ({
+                key: elem.key,
+                data: elem.formInput.getValue()
+            }))
+        )
+        let cancelButton;
+        if (this.cancelButtonActionBinder) {
+            cancelButton = this.cancelButtonBuilder();
+            this.cancelButtonActionBinder(cancelButton)(() =>
+                labelAndInputDomNodes.map(elem => elem.formInput)
+            )
+        }
+        return {
+            labelAndInputDomNodes,
+            submitButton,
+            cancelButton
+        }
+    }
+}
+
+module.exports = { DocBuild, FormFactory };

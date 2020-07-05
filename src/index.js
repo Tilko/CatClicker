@@ -1,11 +1,14 @@
 "use strict";
-const DocBuild = require("./lib/domBuilding");
+const { DocBuild, FormFactory } = require("./lib/domBuilding");
+
 
 const index = function () {
     const catListDomNode = document.querySelector("#catListContainer")
     const imgDomNode = document.querySelector(".catImg")
     const clickCountSpan = document.querySelector(".clickCount")
     const titleDomNode = document.querySelector(".currentCatContainerTitle")
+    const adminButton = document.querySelector(".adminButton")
+    const catAddForm = document.querySelector(".catAddForm")
 
     const model = {
         init: function () {
@@ -18,23 +21,70 @@ const index = function () {
             ]
             this.cats.forEach(cat => { cat.clickCount = 0; });
         },
+        addCat(cat) {
+            this.cats.push(cat);
+        }
     }
     const octopus = {
         init() {
             model.init();
             this.currentCat = model.cats[0];
-            catListDomNode.appendChild(
-                DocBuild.navlistItemsFragment(
-                    model.cats,
-                    cat => cat.name,
-                    (cat, li) => li.addEventListener("click", () => {
-                        currentCatSectionView.render(this.currentCat = cat)
-                    })
-                )
-            )
+            catListView.render(model.cats);
+
             imgDomNode.addEventListener("click",
                 () => currentCatSectionView.renderClickCount(++this.currentCat.clickCount));
             currentCatSectionView.render(this.currentCat)
+
+            const formFacto = new FormFactory(submittedKeyDataPairs => {
+                let cat = {};  //"const" => error (?!?)
+                for (const keyDataPair of submittedKeyDataPairs)
+                    cat[keyDataPair.key] = keyDataPair.data;
+                model.addCat(cat);
+                catListView.render(model.cats);
+            });
+            formFacto.addFieldConfig("Name", "name");
+            formFacto.addFieldConfig("ImgURL", "src");
+            formFacto.addFieldConfig("#Clicks", "clickCount");
+            formFacto.onCancel(formInputs => {
+                catAddForm.style.visibility = "hidden";
+                formInputs.forEach(fi => fi.setValue(""))
+            })
+            catAddFormView.init(formFacto.build());
+
+            adminButton.addEventListener("click", () => {
+                catAddForm.style.visibility = "visible";
+            });
+            //https://placekitten.com/200/300
+        }
+    }
+    const catAddFormView = {
+        init({
+            labelAndInputDomNodes,
+            submitButton,
+            cancelButton
+        }) {
+            catAddForm.style.visibility = "hidden";
+            labelAndInputDomNodes.forEach(labelAndInputDomNode => {
+                const { labelDomNode, formInput } = labelAndInputDomNode;
+                catAddForm.appendChild(labelDomNode)
+                catAddForm.appendChild(formInput.getDomNode())
+            })
+            catAddForm.appendChild(cancelButton)
+            catAddForm.appendChild(submitButton)
+        }
+    }
+    const catListView = {
+        render(cats) {
+            const newListDiv = DocBuild.div(DocBuild.navlistItemsFragment(
+                model.cats,
+                cat => cat.name,
+                (cat, li) => li.addEventListener("click", () => {
+                    currentCatSectionView.render(octopus.currentCat = cat)
+                })
+            ))
+            if (catListDomNode.childElementCount !== 0)
+                catListDomNode.replaceChild(newListDiv, catListDomNode.firstChild)
+            else catListDomNode.appendChild(newListDiv)
         }
     }
     const currentCatSectionView = {
@@ -51,6 +101,10 @@ const index = function () {
 };
 
 document.addEventListener("DOMContentLoaded", index);
+
+// an admin button
+// an admin area with inputs for changing the cat's name, url, and number of clicks (hidden by default)
+
 
 // const index2 = function () {
 
